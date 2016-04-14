@@ -55,18 +55,18 @@ public class GatlingBuildAction implements Action {
   /**
    * This method is called dynamically for any HTTP request to our plugin's
    * URL followed by "/report/SomeSimulationName".
-   * <p/>
+   *
    * It returns a new instance of {@link ReportRenderer}, which contains the
    * actual logic for rendering a report.
    *
-   * @param simName
+   * @param simulationName the name of the simulation
    */
-  public ReportRenderer getReport(String simName) {
-    return new ReportRenderer(this, getSimulation(simName));
+  public ReportRenderer getReport(String simulationName) {
+    return new ReportRenderer(this, getSimulation(simulationName));
   }
 
-  public String getReportURL(String simName) {
-    return new StringBuilder().append(URL_NAME).append("/report/").append(simName).toString();
+  public String getReportURL(String simulationName) {
+    return new StringBuilder().append(URL_NAME).append("/report/").append(simulationName).toString();
   }
 
   private BuildSimulation getSimulation(String simulationName) {
