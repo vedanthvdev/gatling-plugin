@@ -58,7 +58,7 @@ public class ReportRenderer {
   /**
    * This method will be called for all URLs that are routed here by
    * {@link GatlingBuildAction} with a prefix of `/source`.
-   * <p/>
+   *
    * All such requests basically result in the servlet simply serving
    * up content files directly from the archived simulation directory
    * on disk.
