@@ -20,17 +20,15 @@ import hudson.FilePath;
 import hudson.Launcher;
 import hudson.init.Initializer;
 import hudson.init.InitMilestone;
-import hudson.model.AbstractBuild;
-import hudson.model.AbstractProject;
-import hudson.model.Action;
-import hudson.model.BuildListener;
-import hudson.model.Items;
+import hudson.model.*;
 import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.BuildStepMonitor;
 import hudson.tasks.Publisher;
 import hudson.tasks.Recorder;
+import jenkins.tasks.SimpleBuildStep;
 import org.kohsuke.stapler.DataBoundConstructor;
 
+import javax.annotation.Nonnull;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
@@ -39,10 +37,10 @@ import java.util.Collections;
 import java.util.List;
 
 @SuppressWarnings("unchecked")
-public class GatlingPublisher extends Recorder {
+public class GatlingPublisher extends Recorder implements SimpleBuildStep {
 
   private final Boolean enabled;
-  private AbstractBuild<?, ?> build;
+  private Run<?, ?> build;
   private PrintStream logger;
 
 
@@ -51,32 +49,31 @@ public class GatlingPublisher extends Recorder {
     this.enabled = enabled;
   }
 
+
   @Override
-  public boolean perform(AbstractBuild<?, ?> build, Launcher launcher, BuildListener listener) throws InterruptedException, IOException {
+  public void perform(@Nonnull Run<?, ?> build, @Nonnull FilePath workspace, @Nonnull Launcher launcher, @Nonnull TaskListener listener) throws InterruptedException, IOException {
     this.build = build;
     logger = listener.getLogger();
     if (enabled == null) {
       logger.println("Cannot check Gatling simulation tracking status, reports won't be archived.");
       logger.println("Please make sure simulation tracking is enabled in your build configuration !");
-      return true;
+      return;
     }
     if (!enabled) {
       logger.println("Simulation tracking disabled, reports were not archived.");
-      return true;
+      return;
     }
 
     logger.println("Archiving Gatling reports...");
-    List<BuildSimulation> sims = saveFullReports(build.getWorkspace(), build.getRootDir());
+    List<BuildSimulation> sims = saveFullReports(workspace, build.getRootDir());
     if (sims.isEmpty()) {
       logger.println("No newer Gatling reports to archive.");
-      return true;
+      return;
     }
 
     GatlingBuildAction action = new GatlingBuildAction(build, sims);
 
     build.addAction(action);
-
-    return true;
   }
 
   public boolean isEnabled() {
@@ -85,11 +82,6 @@ public class GatlingPublisher extends Recorder {
 
   public BuildStepMonitor getRequiredMonitorService() {
     return BuildStepMonitor.BUILD;
-  }
-
-  @Override
-  public Action getProjectAction(AbstractProject<?, ?> project) {
-    return new GatlingProjectAction(project);
   }
 
   private List<BuildSimulation> saveFullReports(FilePath workspace, File rootDir) throws IOException, InterruptedException {
@@ -117,15 +109,24 @@ public class GatlingPublisher extends Recorder {
     List<BuildSimulation> simsToArchive = new ArrayList<BuildSimulation>();
 
     File allSimulationsDirectory = new File(rootDir, "simulations");
-    if (!allSimulationsDirectory.exists())
-      allSimulationsDirectory.mkdir();
+    if (!allSimulationsDirectory.exists()) {
+      boolean mkdirResult = allSimulationsDirectory.mkdir();
+      if (! mkdirResult) {
+        logger.println("Could not create simulations archive directory '" + allSimulationsDirectory + "'");
+        return Collections.emptyList();
+      }
+    }
 
     for (FilePath reportToArchive : reportsToArchive) {
       String name = reportToArchive.getName();
       int dashIndex = name.lastIndexOf('-');
       String simulation = name.substring(0, dashIndex);
       File simulationDirectory = new File(allSimulationsDirectory, name);
-      simulationDirectory.mkdir();
+      boolean mkdirResult = simulationDirectory.mkdir();
+      if (! mkdirResult) {
+        logger.println("Could not create simulation archive directory '" + simulationDirectory + "'");
+        return Collections.emptyList();
+      }
 
       FilePath reportDirectory = new FilePath(simulationDirectory);
 
@@ -166,7 +167,7 @@ public class GatlingPublisher extends Recorder {
 
     @Override
     public String getDisplayName() {
-      return Messages.Title();
+      return Messages.title();
     }
 
     @Initializer(before = InitMilestone.PLUGINS_STARTED)
@@ -175,6 +176,4 @@ public class GatlingPublisher extends Recorder {
       Items.XSTREAM2.addCompatibilityAlias("com.excilys.ebi.gatling.jenkins.GatlingBuildAction", GatlingBuildAction.class);
     }
   }
-
-
 }

@@ -15,15 +15,14 @@
  */
 package io.gatling.jenkins.chart;
 
-import hudson.model.AbstractBuild;
-import hudson.model.AbstractProject;
-
 import java.io.IOException;
 import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import hudson.model.Job;
+import hudson.model.Run;
 import io.gatling.jenkins.GatlingBuildAction;
 import io.gatling.jenkins.BuildSimulation;
 import io.gatling.jenkins.RequestReport;
@@ -36,9 +35,9 @@ public abstract class Graph<Y extends Number> {
 
   private final ObjectMapper mapper = new ObjectMapper();
 
-  public Graph(AbstractProject<?, ?> project, int maxBuildsToDisplay) {
+  public Graph(Job<?, ?> project, int maxBuildsToDisplay) {
     int numberOfBuild = 0;
-    for (AbstractBuild<?, ?> build : project.getBuilds()) {
+    for (Run<?, ?> build : project.getBuilds()) {
       GatlingBuildAction action = build.getAction(GatlingBuildAction.class);
 
       if (action != null) {

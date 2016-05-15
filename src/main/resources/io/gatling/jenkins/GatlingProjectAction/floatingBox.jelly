@@ -1,3 +1,4 @@
+<?jelly escape-by-default='true'?>
 <j:jelly xmlns:j="jelly:core" xmlns:g="/io/gatling/jenkins/tags">
 	<j:if test="${action.isVisible()}">
 		<g:import/>
