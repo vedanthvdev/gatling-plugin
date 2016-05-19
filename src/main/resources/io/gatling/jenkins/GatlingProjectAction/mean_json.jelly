@@ -1,3 +1,4 @@
+<?jelly escape-by-default='true'?>
 <j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:fmt="jelly:fmt" xmlns:l="/lib/layout"
          xmlns:g="/io/gatling/jenkins/tags">
   ${it.meanResponseTimeGraph.seriesJSON}

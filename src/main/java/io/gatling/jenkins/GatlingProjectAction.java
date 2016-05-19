@@ -17,9 +17,7 @@ package io.gatling.jenkins;
 
 import static io.gatling.jenkins.PluginConstants.*;
 
-import hudson.model.Action;
-import hudson.model.AbstractBuild;
-import hudson.model.AbstractProject;
+import hudson.model.*;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -30,9 +28,9 @@ import io.gatling.jenkins.chart.Graph;
 
 public class GatlingProjectAction implements Action {
 
-  private final AbstractProject<?, ?> project;
+  private final Job<?, ?> project;
 
-  public GatlingProjectAction(AbstractProject<?, ?> project) {
+  public GatlingProjectAction(Job<?, ?> project) {
     this.project = project;
   }
 
@@ -48,12 +46,12 @@ public class GatlingProjectAction implements Action {
     return URL_NAME;
   }
 
-  public AbstractProject<?, ?> getProject() {
+  public Job<?, ?> getProject() {
     return project;
   }
 
   public boolean isVisible() {
-    for (AbstractBuild<?, ?> build : getProject().getBuilds()) {
+    for (Run<?, ?> build : getProject().getBuilds()) {
       GatlingBuildAction gatlingBuildAction = build.getAction(GatlingBuildAction.class);
       if (gatlingBuildAction != null) {
         return true;
@@ -98,10 +96,10 @@ public class GatlingProjectAction implements Action {
     };
   }
 
-  public Map<AbstractBuild<?, ?>, List<String>> getReports() {
-    Map<AbstractBuild<?, ?>, List<String>> reports = new LinkedHashMap<AbstractBuild<?, ?>, List<String>>();
+  public Map<Run<?, ?>, List<String>> getReports() {
+    Map<Run<?, ?>, List<String>> reports = new LinkedHashMap<Run<?, ?>, List<String>>();
 
-    for (AbstractBuild<?, ?> build : project.getBuilds()) {
+    for (Run<?, ?> build : project.getBuilds()) {
       GatlingBuildAction action = build.getAction(GatlingBuildAction.class);
       if (action != null) {
         List<String> simNames = new ArrayList<String>();

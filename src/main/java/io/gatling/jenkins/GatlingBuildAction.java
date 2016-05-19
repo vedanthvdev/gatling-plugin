@@ -19,20 +19,43 @@ import static io.gatling.jenkins.PluginConstants.*;
 
 import hudson.model.Action;
 import hudson.model.AbstractBuild;
+import hudson.model.Run;
+import jenkins.tasks.SimpleBuildStep;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
-public class GatlingBuildAction implements Action {
+/**
+ * An Action to add to a project/job's build/run page in the UI.
+ *
+ * Note that in order to be compatible with the new Jenkins Pipeline jobs,
+ * Actions that should be added to the project/job's page directly must be added
+ * by implementing the SimpleBuildStep.LastBuildAction interface, and encapsulating
+ * the project actions in the build action via the getProjectActions method.
+ *
+ * This is necessary and now preferred to the old approach of defining getProjectAction
+ * directly on the Publisher, because for a Pipeline job, Jenkins doesn't know ahead
+ * of time what actions will be triggered, and will never call the Publisher.getProjectAction
+ * method.  Attaching it as a LastBuildAction means that it is discoverable once
+ * the Pipeline job has been run once.
+ */
+public class GatlingBuildAction implements Action, SimpleBuildStep.LastBuildAction {
 
-  private final AbstractBuild<?, ?> build;
+  private final Run<?, ?> build;
   private final List<BuildSimulation> simulations;
+  private final List<GatlingProjectAction> projectActions;
 
-  public GatlingBuildAction(AbstractBuild<?, ?> build, List<BuildSimulation> sims) {
+  public GatlingBuildAction(Run<?, ?> build, List<BuildSimulation> sims) {
     this.build = build;
     this.simulations = sims;
+
+    List<GatlingProjectAction> projectActions = new ArrayList<>();
+    projectActions.add(new GatlingProjectAction(build.getParent()));
+    this.projectActions = projectActions;
   }
 
-  public AbstractBuild<?, ?> getBuild() {
+  public Run<?, ?> getBuild() {
     return build;
   }
 
@@ -79,4 +102,8 @@ public class GatlingBuildAction implements Action {
     return null;
   }
 
+  @Override
+  public Collection<? extends Action> getProjectActions() {
+    return this.projectActions;
+  }
 }
