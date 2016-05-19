@@ -29,25 +29,22 @@
 
 	<developers>
 		<developer>
-			<id>slandelle@excilys.com</id>
+			<id>slandelle</id>
+			<email>slandelle@gatling.io</email>
 			<name>Stephane Landelle</name>
-			<organization>eBusiness Information, Excilys Group</organization>
+			<organization>GatlingCorp</organization>
 		</developer>
 		<developer>
 			<id>pdalpra</id>
-			<email>pdalpra@excilys.com</email>
 			<name>Pierre Dal-Pra</name>
-			<organization>eBusiness Information, Excilys Group</organization>
 		</developer>
 		<developer>
-			<id>blemale@excilys.com&gt;</id>
+			<id>blemale</id>
 			<name>Bastien Lemale</name>
-			<organization>eBusiness Information, Excilys Group</organization>
 		</developer>
 		<developer>
-			<id>gcoutant@excilys.com&gt;</id>
+			<id>gcoutant</id>
 			<name>Gregory Coutant</name>
-			<organization>eBusiness Information, Excilys Group</organization>
 		</developer>
 	</developers>
 
