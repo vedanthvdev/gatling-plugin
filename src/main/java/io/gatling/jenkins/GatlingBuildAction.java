@@ -18,7 +18,6 @@ package io.gatling.jenkins;
 import static io.gatling.jenkins.PluginConstants.*;
 
 import hudson.model.Action;
-import hudson.model.AbstractBuild;
 import hudson.model.Run;
 import jenkins.tasks.SimpleBuildStep;
 
@@ -42,21 +41,16 @@ import java.util.List;
  */
 public class GatlingBuildAction implements Action, SimpleBuildStep.LastBuildAction {
 
-  private final Run<?, ?> build;
+  private final Run<?, ?> run;
   private final List<BuildSimulation> simulations;
-  private final List<GatlingProjectAction> projectActions;
 
-  public GatlingBuildAction(Run<?, ?> build, List<BuildSimulation> sims) {
-    this.build = build;
+  public GatlingBuildAction(Run<?, ?> run, List<BuildSimulation> sims) {
+    this.run = run;
     this.simulations = sims;
-
-    List<GatlingProjectAction> projectActions = new ArrayList<>();
-    projectActions.add(new GatlingProjectAction(build.getParent()));
-    this.projectActions = projectActions;
   }
 
-  public Run<?, ?> getBuild() {
-    return build;
+  public Run<?, ?> getRun() {
+    return run;
   }
 
   public List<BuildSimulation> getSimulations() {
@@ -104,6 +98,8 @@ public class GatlingBuildAction implements Action, SimpleBuildStep.LastBuildActi
 
   @Override
   public Collection<? extends Action> getProjectActions() {
-    return this.projectActions;
+    List<GatlingProjectAction> projectActions = new ArrayList<>();
+    projectActions.add(new GatlingProjectAction(run.getParent()));
+    return projectActions;
   }
 }

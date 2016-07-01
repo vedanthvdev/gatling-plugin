@@ -1,9 +1,9 @@
 <?jelly escape-by-default='true'?>
 <j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler"
          xmlns:l="/lib/layout">
-	<l:layout title="Build #${it.build.number}">
+	<l:layout title="Build #${it.run.number}">
 		<l:side-panel>
-			<st:include it="${it.build}" page="sidepanel.jelly"/>
+			<st:include it="${it.run}" page="sidepanel.jelly"/>
 		</l:side-panel>
 		<l:main-panel>
             <h2>${%AvailableReports} :</h2>

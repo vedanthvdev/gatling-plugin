@@ -35,10 +35,10 @@ public abstract class Graph<Y extends Number> {
 
   private final ObjectMapper mapper = new ObjectMapper();
 
-  public Graph(Job<?, ?> project, int maxBuildsToDisplay) {
+  public Graph(Job<?, ?> job, int maxBuildsToDisplay) {
     int numberOfBuild = 0;
-    for (Run<?, ?> build : project.getBuilds()) {
-      GatlingBuildAction action = build.getAction(GatlingBuildAction.class);
+    for (Run<?, ?> run : job.getBuilds()) {
+      GatlingBuildAction action = run.getAction(GatlingBuildAction.class);
 
       if (action != null) {
         numberOfBuild++;
@@ -47,7 +47,7 @@ public abstract class Graph<Y extends Number> {
           if (!series.containsKey(name))
             series.put(name, new Serie<Integer, Y>());
 
-          series.get(name).addPoint(build.getNumber(), getValue(sim.getRequestReport()));
+          series.get(name).addPoint(run.getNumber(), getValue(sim.getRequestReport()));
         }
       }
 
