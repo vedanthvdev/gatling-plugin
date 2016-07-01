@@ -15,6 +15,7 @@
  */
 package io.gatling.jenkins;
 
+import hudson.model.Action;
 import hudson.model.DirectoryBrowserSupport;
 import org.kohsuke.stapler.ForwardToView;
 import org.kohsuke.stapler.StaplerRequest;
@@ -29,10 +30,10 @@ import java.io.IOException;
  */
 public class ReportRenderer {
 
-  private GatlingBuildAction action;
+  private Action action;
   private BuildSimulation simulation;
 
-  public ReportRenderer(GatlingBuildAction gatlingBuildAction, BuildSimulation simulation) {
+  public ReportRenderer(Action gatlingBuildAction, BuildSimulation simulation) {
     this.action = gatlingBuildAction;
     this.simulation = simulation;
   }

@@ -17,6 +17,8 @@ package io.gatling.jenkins.steps;
 
 import hudson.FilePath;
 import hudson.Launcher;
+import hudson.model.AbstractBuild;
+import hudson.model.BuildListener;
 import hudson.model.Run;
 import hudson.model.TaskListener;
 import io.gatling.jenkins.GatlingPublisher;
@@ -24,6 +26,7 @@ import org.jenkinsci.plugins.workflow.steps.AbstractSynchronousNonBlockingStepEx
 import org.jenkinsci.plugins.workflow.steps.StepContextParameter;
 
 public class GatlingArchiverStepExecution extends AbstractSynchronousNonBlockingStepExecution<Void> {
+    private static final long serialVersionUID = 1L;
 
     @StepContextParameter
     private transient TaskListener listener;
@@ -46,6 +49,4 @@ public class GatlingArchiverStepExecution extends AbstractSynchronousNonBlocking
 
         return null;
     }
-
-    private static final long serialVersionUID = 1L;
 }

@@ -1,15 +1,15 @@
 <?jelly escape-by-default='true'?>
 <j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:fmt="jelly:fmt" xmlns:l="/lib/layout"
          xmlns:g="/io/gatling/jenkins/tags">
-	<l:layout title="${it.project.name} - ${%ProjectPageTitle}">
+	<l:layout title="${it.job.name} - ${%ProjectPageTitle}">
 		<l:header>
 			<g:import/>
 		</l:header>
 		<l:side-panel>
-			<st:include it="${it.project}" page="sidepanel.jelly"/>
+			<st:include it="${it.job}" page="sidepanel.jelly"/>
 		</l:side-panel>
 		<l:main-panel>
-			<h1>${it.project.name} - ${%ProjectPageTitle}</h1>
+			<h1>${it.job.name} - ${%ProjectPageTitle}</h1>
 			<g:graph id="meanResponseTime" title="${%MeanResponseTimeChartTitle}"
 			         seriesNames="${it.meanResponseTimeGraph.seriesNamesJSON}"
 			         data="${it.meanResponseTimeGraph.seriesJSON}" yAxisUnit="ms"

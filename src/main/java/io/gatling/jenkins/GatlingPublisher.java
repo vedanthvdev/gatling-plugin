@@ -40,7 +40,7 @@ import java.util.List;
 public class GatlingPublisher extends Recorder implements SimpleBuildStep {
 
   private final Boolean enabled;
-  private Run<?, ?> build;
+  private Run<?, ?> run;
   private PrintStream logger;
 
 
@@ -51,8 +51,35 @@ public class GatlingPublisher extends Recorder implements SimpleBuildStep {
 
 
   @Override
-  public void perform(@Nonnull Run<?, ?> build, @Nonnull FilePath workspace, @Nonnull Launcher launcher, @Nonnull TaskListener listener) throws InterruptedException, IOException {
-    this.build = build;
+  public boolean perform(AbstractBuild<?, ?> build, Launcher launcher, BuildListener listener) throws InterruptedException, IOException {
+    this.run = build;
+    logger = listener.getLogger();
+    if (enabled == null) {
+      logger.println("Cannot check Gatling simulation tracking status, reports won't be archived.");
+      logger.println("Please make sure simulation tracking is enabled in your build configuration !");
+      return true;
+    }
+    if (!enabled) {
+      logger.println("Simulation tracking disabled, reports were not archived.");
+      return true;
+    }
+
+    logger.println("Archiving Gatling reports...");
+    List<BuildSimulation> sims = saveFullReports(build.getWorkspace(), build.getRootDir());
+    if (sims.isEmpty()) {
+      logger.println("No newer Gatling reports to archive.");
+      return true;
+    }
+
+    GatlingBuildAction action = new GatlingBuildAction(build, sims);
+
+    build.addAction(action);
+    return true;
+  }
+
+  @Override
+  public void perform(@Nonnull Run<?, ?> run, @Nonnull FilePath workspace, @Nonnull Launcher launcher, @Nonnull TaskListener listener) throws InterruptedException, IOException {
+    this.run = run;
     logger = listener.getLogger();
     if (enabled == null) {
       logger.println("Cannot check Gatling simulation tracking status, reports won't be archived.");
@@ -65,15 +92,16 @@ public class GatlingPublisher extends Recorder implements SimpleBuildStep {
     }
 
     logger.println("Archiving Gatling reports...");
-    List<BuildSimulation> sims = saveFullReports(workspace, build.getRootDir());
+
+    List<BuildSimulation> sims = saveFullReports(workspace, run.getRootDir());
     if (sims.isEmpty()) {
       logger.println("No newer Gatling reports to archive.");
       return;
     }
 
-    GatlingBuildAction action = new GatlingBuildAction(build, sims);
+    GatlingBuildAction action = new GatlingBuildAction(run, sims);
 
-    build.addAction(action);
+    run.addAction(action);
   }
 
   public boolean isEnabled() {
@@ -144,10 +172,11 @@ public class GatlingPublisher extends Recorder implements SimpleBuildStep {
   }
 
   private List<FilePath> selectReports(List<FilePath> reportFolders) throws InterruptedException, IOException {
-    long buildStartTime = build.getStartTimeInMillis();
+    long buildStartTime = run.getStartTimeInMillis();
     List<FilePath> reportsFromThisBuild = new ArrayList<FilePath>();
     for (FilePath reportFolder : reportFolders) {
       long reportLastMod = reportFolder.lastModified();
+
       if (reportLastMod > buildStartTime) {
         logger.println("Adding report '" + reportFolder.getName() + "'");
         reportsFromThisBuild.add(reportFolder);
