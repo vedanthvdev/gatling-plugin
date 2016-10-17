@@ -4,16 +4,16 @@
 	<l:layout title="Build #${it.build.number} : ${simName}">
 		<l:breadcrumb title="${simName}" href="."/>
 		<l:side-panel>
-			<st:include it="${it.build}" page="sidepanel.jelly"/>
+			<st:include it="${it.run}" page="sidepanel.jelly"/>
 		</l:side-panel>
 		<l:main-panel>
 			<script type="text/javascript">
 				function resizeReportFrame() {
-					var frame = document.getElementById("reportFrame")
-					frame.height = frame.contentWindow.document.body.scrollHeight + "px"
+					var html = document.documentElement;
+                    document.getElementById("reportFrame").height = Math.max(html.clientHeight, html.scrollHeight, html.offsetHeight) - document.getElementById("page-head").scrollHeight - document.getElementById("menuSelector").scrollHeight - document.getElementById("newTab").scrollHeight;
 				}
 			</script>
-			<h3>
+			<h3 id="newTab">
 				<a href="source" target="_blank">${%OpenNewPage}</a>
 			</h3>
 			<iframe id="reportFrame" src="source" width="100%" height="100%" frameborder="0"

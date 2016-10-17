@@ -65,16 +65,22 @@ public class GatlingPublisher extends Recorder implements SimpleBuildStep {
     }
 
     logger.println("Archiving Gatling reports...");
-    List<BuildSimulation> sims = saveFullReports(build.getWorkspace(), build.getRootDir());
-    if (sims.isEmpty()) {
-      logger.println("No newer Gatling reports to archive.");
+    FilePath workspace = build.getWorkspace();
+    if (workspace != null) {
+      List<BuildSimulation> sims = saveFullReports(workspace, build.getRootDir());
+      if (sims.isEmpty()) {
+        logger.println("No newer Gatling reports to archive.");
+        return true;
+      }
+
+      GatlingBuildAction action = new GatlingBuildAction(build, sims);
+
+      build.addAction(action);
       return true;
+    } else {
+      logger.println("Failed to access workspace, it may be on a non-connected slave.");
+      return false;
     }
-
-    GatlingBuildAction action = new GatlingBuildAction(build, sims);
-
-    build.addAction(action);
-    return true;
   }
 
   @Override
