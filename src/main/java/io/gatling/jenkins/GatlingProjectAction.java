@@ -82,7 +82,7 @@ public class GatlingProjectAction implements Action {
     return new Graph<Long>(job, MAX_BUILDS_TO_DISPLAY) {
       @Override
       public Long getValue(RequestReport requestReport) {
-        return requestReport.getPercentiles1().getTotal();
+        return requestReport.getPercentiles3().getTotal();
       }
     };
   }
