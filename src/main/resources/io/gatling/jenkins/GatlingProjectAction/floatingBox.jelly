@@ -13,7 +13,7 @@
             var dashboardSeriesValues = ${action.dashboardGraph.seriesJSON};
 						jQueryGatling('#dashboardGatling').bind('jqplotDataClick',
                 function (ev, seriesIndex, pointIndex, data) {
-                    var xAxisArray = dashboardSeriesValues[seriesIndex].reverse();
+                    var xAxisArray = dashboardSeriesValues[seriesIndex];
                     var url = xAxisArray[pointIndex][0] + "/gatling/report/" + dashboardSeriesNames[seriesIndex].label + "/";
                     var win = window.open(url, '_blank');
                     win.focus();

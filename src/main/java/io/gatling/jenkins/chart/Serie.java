@@ -17,6 +17,7 @@ package io.gatling.jenkins.chart;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import com.fasterxml.jackson.core.JsonGenerator;
@@ -32,7 +33,9 @@ public class Serie<X extends Number, Y extends Number> implements JsonSerializab
   }
 
   public void serialize(JsonGenerator jgen, SerializerProvider provider) throws IOException {
-    jgen.writeObject(points);
+    List<Point<X,Y>> reversePoints = points.subList(0, points.size());
+    Collections.reverse(reversePoints);
+    jgen.writeObject(reversePoints);
   }
 
   public void serializeWithType(JsonGenerator jgen, SerializerProvider provider, TypeSerializer typeSer) {

@@ -39,7 +39,7 @@
 
                 jQueryGatling('#meanResponseTime').bind('jqplotDataClick',
                     function (ev, seriesIndex, pointIndex, data) {
-                        var xAxisArray = meanResponseSeriesValues[seriesIndex].reverse();
+                        var xAxisArray = meanResponseSeriesValues[seriesIndex];
                         var url = "../" + xAxisArray[pointIndex][0] + "/gatling/report/" + meanResponseSeriesNames[seriesIndex].label + "/";
                         var win = window.open(url, '_blank');
                         win.focus();
@@ -51,7 +51,7 @@
 
                 jQueryGatling('#responseTimePercentile').bind('jqplotDataClick',
                     function (ev, seriesIndex, pointIndex, data) {
-                        var xAxisArray = responseTimeSeriesValues[seriesIndex].reverse();
+                        var xAxisArray = responseTimeSeriesValues[seriesIndex];
                         var url = "../" + xAxisArray[pointIndex][0] + "/gatling/report/" + responseTimeSeriesNames[seriesIndex].label + "/";
                         var win = window.open(url, '_blank');
                         win.focus();
@@ -63,7 +63,7 @@
 
                 jQueryGatling('#requestKO').bind('jqplotDataClick',
                     function (ev, seriesIndex, pointIndex, data) {
-                        var xAxisArray = responseTimeSeriesValues[seriesIndex].reverse();
+                        var xAxisArray = requestKOSeriesValues[seriesIndex];
                         var url = "../" + xAxisArray[pointIndex][0] + "/gatling/report/" + requestKOSeriesNames[seriesIndex].label + "/";
                         var win = window.open(url, '_blank');
                         win.focus();
