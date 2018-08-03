@@ -16,6 +16,7 @@
 package io.gatling.jenkins.chart;
 
 import java.io.IOException;
+import java.util.Objects;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonSerializable;
@@ -24,15 +25,18 @@ import com.fasterxml.jackson.databind.jsontype.TypeSerializer;
 
 public class SerieName implements JsonSerializable, Comparable<SerieName> {
   final String name;
+  final String path;
 
-  public SerieName(String name) {
+  public SerieName(String name, String path) {
     this.name = name;
+    this.path = path;
   }
 
   public void serialize(JsonGenerator jgen, SerializerProvider provider) throws IOException {
     jgen.disable(JsonGenerator.Feature.QUOTE_FIELD_NAMES);
     jgen.writeStartObject();
     jgen.writeStringField("label", name);
+    jgen.writeStringField("path", path);
     jgen.writeEndObject();
   }
 

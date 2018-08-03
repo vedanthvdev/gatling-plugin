@@ -9,12 +9,11 @@
 		</div>
 
         <script>
-            var dashboardSeriesNames = ${action.dashboardGraph.seriesNamesJSON};
             var dashboardSeriesValues = ${action.dashboardGraph.seriesJSON};
 						jQueryGatling('#dashboardGatling').bind('jqplotDataClick',
                 function (ev, seriesIndex, pointIndex, data) {
                     var xAxisArray = dashboardSeriesValues[seriesIndex];
-                    var url = xAxisArray[pointIndex][0] + "/gatling/report/" + dashboardSeriesNames[seriesIndex].label + "/";
+                    var url = xAxisArray[pointIndex][0] + "/gatling/report/" + xAxisArray[pointIndex][2] + "/";
                     var win = window.open(url, '_blank');
                     win.focus();
                 }

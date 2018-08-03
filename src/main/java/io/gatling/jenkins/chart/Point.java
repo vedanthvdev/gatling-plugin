@@ -25,10 +25,12 @@ import com.fasterxml.jackson.databind.jsontype.TypeSerializer;
 public class Point<X extends Number, Y extends Number> implements JsonSerializable {
   private final X x;
   private final Y y;
+  private final String name;
 
-  public Point(X x, Y y) {
+  public Point(X x, Y y, String name) {
     this.x = x;
     this.y = y;
+    this.name = name;
   }
 
   public X getX() {
@@ -39,10 +41,15 @@ public class Point<X extends Number, Y extends Number> implements JsonSerializab
     return y;
   }
 
+  public String getName() {
+    return name;
+  }
+
   public void serialize(JsonGenerator jgen, SerializerProvider provider) throws IOException {
     jgen.writeStartArray();
     jgen.writeObject(x);
     jgen.writeObject(y);
+    jgen.writeObject(name);
     jgen.writeEndArray();
   }
 

@@ -87,7 +87,6 @@ public class GatlingBuildAction implements Action, SimpleBuildStep.LastBuildActi
   }
 
   private BuildSimulation getSimulationByReportName(String reportName) {
-    // this isn't the most efficient implementation in the world :)
     for (BuildSimulation sim : this.getSimulations()) {
       if (sim.getSimulationDirectory().getName().equals(reportName)) {
         return sim;

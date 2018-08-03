@@ -43,11 +43,12 @@ public abstract class Graph<Y extends Number> {
       if (action != null) {
         numberOfBuild++;
         for (BuildSimulation sim : action.getSimulations()) {
-          SerieName name = new SerieName(sim.getSimulationName());
-          if (!series.containsKey(name))
-            series.put(name, new Serie<Integer, Y>());
+          SerieName serieName = new SerieName(sim.getSimulationName(), sim.getSimulationDirectory().getName());
+          if (!series.containsKey(serieName)) {
+            series.put(serieName, new Serie<Integer, Y>());
+          }
 
-          series.get(name).addPoint(run.getNumber(), getValue(sim.getRequestReport()));
+          series.get(serieName).addPoint(run.getNumber(), getValue(sim.getRequestReport()), serieName.path);
         }
       }
 
