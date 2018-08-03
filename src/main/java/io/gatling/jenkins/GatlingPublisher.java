@@ -117,7 +117,7 @@ public class GatlingPublisher extends Recorder implements SimpleBuildStep {
   private List<BuildSimulation> saveFullReports(@Nonnull Run<?,?> run, @Nonnull FilePath workspace, @Nonnull File rootDir, @Nonnull PrintStream logger)
           throws IOException, InterruptedException {
     FilePath[] files = workspace.list("**/global_stats.json");
-    List<FilePath> reportFolders = new ArrayList<FilePath>();
+    List<FilePath> reportFolders = new ArrayList<>();
 
     if (files.length == 0) {
       logger.println("Could not find a Gatling report in results folder.");
@@ -137,7 +137,7 @@ public class GatlingPublisher extends Recorder implements SimpleBuildStep {
       return Collections.emptyList();
     }
 
-    List<BuildSimulation> simsToArchive = new ArrayList<BuildSimulation>();
+    List<BuildSimulation> simsToArchive = new ArrayList<>();
 
     File allSimulationsDirectory = new File(rootDir, "simulations");
     if (!allSimulationsDirectory.exists()) {
@@ -178,7 +178,7 @@ public class GatlingPublisher extends Recorder implements SimpleBuildStep {
   private static List<FilePath> selectReports(@Nonnull Run<?, ?> run, @Nonnull List<FilePath> reportFolders,
                                               @Nonnull PrintStream logger) throws InterruptedException, IOException {
     long buildStartTime = run.getStartTimeInMillis();
-    List<FilePath> reportsFromThisBuild = new ArrayList<FilePath>();
+    List<FilePath> reportsFromThisBuild = new ArrayList<>();
     for (FilePath reportFolder : reportFolders) {
       long reportLastMod = reportFolder.lastModified();
 
@@ -206,8 +206,8 @@ public class GatlingPublisher extends Recorder implements SimpleBuildStep {
 
     @Initializer(before = InitMilestone.PLUGINS_STARTED)
     public static void addAliases() {
-      Items.XSTREAM2.addCompatibilityAlias("com.excilys.ebi.gatling.jenkins.GatlingPublisher", GatlingPublisher.class);
-      Items.XSTREAM2.addCompatibilityAlias("com.excilys.ebi.gatling.jenkins.GatlingBuildAction", GatlingBuildAction.class);
+      Items.XSTREAM2.addCompatibilityAlias("io.gatling.jenkins.GatlingPublisher", GatlingPublisher.class);
+      Items.XSTREAM2.addCompatibilityAlias("io.gatling.jenkins.GatlingBuildAction", GatlingBuildAction.class);
     }
   }
 }

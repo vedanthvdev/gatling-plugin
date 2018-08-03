@@ -83,7 +83,7 @@ public class GatlingBuildAction implements Action, SimpleBuildStep.LastBuildActi
   }
 
   public String getReportURL(BuildSimulation simulation) {
-    return new StringBuilder().append(URL_NAME).append("/report/").append(simulation.getSimulationDirectory().getName()).toString();
+    return URL_NAME + "/report/" + simulation.getSimulationDirectory().getName();
   }
 
   private BuildSimulation getSimulationByReportName(String reportName) {

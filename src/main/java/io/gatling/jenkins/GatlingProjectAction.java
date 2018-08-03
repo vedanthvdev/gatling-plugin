@@ -97,12 +97,12 @@ public class GatlingProjectAction implements Action {
   }
 
   public Map<Run<?, ?>, List<String>> getReports() {
-    Map<Run<?, ?>, List<String>> reports = new LinkedHashMap<Run<?, ?>, List<String>>();
+    Map<Run<?, ?>, List<String>> reports = new LinkedHashMap<>();
 
     for (Run<?, ?> build : job.getBuilds()) {
       GatlingBuildAction action = build.getAction(GatlingBuildAction.class);
       if (action != null) {
-        List<String> simNames = new ArrayList<String>();
+        List<String> simNames = new ArrayList<>();
         for (BuildSimulation sim : action.getSimulations()) {
           simNames.add(sim.getSimulationDirectory().getName());
         }
@@ -114,6 +114,6 @@ public class GatlingProjectAction implements Action {
   }
 
   public String getReportURL(int build, String simName) {
-    return new StringBuilder().append(build).append("/").append(URL_NAME).append("/report/").append(simName).toString();
+    return String.valueOf(build) + "/" + URL_NAME + "/report/" + simName;
   }
 }

@@ -31,7 +31,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public abstract class Graph<Y extends Number> {
   private static final Logger LOGGER = Logger.getLogger(Graph.class.getName());
 
-  private final SortedMap<SerieName, Serie<Integer, Y>> series = new TreeMap<SerieName, Serie<Integer, Y>>();
+  private final SortedMap<SerieName, Serie<Integer, Y>> series = new TreeMap<>();
 
   private final ObjectMapper mapper = new ObjectMapper();
 
@@ -45,10 +45,10 @@ public abstract class Graph<Y extends Number> {
         for (BuildSimulation sim : action.getSimulations()) {
           SerieName serieName = new SerieName(sim.getSimulationName(), sim.getSimulationDirectory().getName());
           if (!series.containsKey(serieName)) {
-            series.put(serieName, new Serie<Integer, Y>());
+            series.put(serieName, new Serie<>());
           }
 
-          series.get(serieName).addPoint(run.getNumber(), getValue(sim.getRequestReport()), serieName.path);
+          series.get(serieName).addPoint(run.getNumber(), getValue(sim.getRequestReport()), serieName.getPath());
         }
       }
 

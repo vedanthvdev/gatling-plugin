@@ -24,8 +24,8 @@ import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.jsontype.TypeSerializer;
 
 public class SerieName implements JsonSerializable, Comparable<SerieName> {
-  final String name;
-  final String path;
+  private final String name;
+  private final String path;
 
   public SerieName(String name, String path) {
     this.name = name;
@@ -42,6 +42,14 @@ public class SerieName implements JsonSerializable, Comparable<SerieName> {
 
   public void serializeWithType(JsonGenerator jgen, SerializerProvider provider, TypeSerializer typeSer) throws IOException {
     throw new UnsupportedOperationException();
+  }
+
+  public String getName() {
+    return name;
+  }
+
+  public String getPath() {
+    return path;
   }
 
   @Override

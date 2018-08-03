@@ -26,10 +26,10 @@ import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.jsontype.TypeSerializer;
 
 public class Serie<X extends Number, Y extends Number> implements JsonSerializable {
-  private final List<Point<X, Y>> points = new ArrayList<Point<X, Y>>();
+  private final List<Point<X, Y>> points = new ArrayList<>();
 
   public void addPoint(X x, Y y, String name) {
-    points.add(new Point<X, Y>(x, y, name));
+    points.add(new Point<>(x, y, name));
   }
 
   public void serialize(JsonGenerator jgen, SerializerProvider provider) throws IOException {
