@@ -49,44 +49,14 @@ public class GatlingPublisher extends Recorder implements SimpleBuildStep {
 
   @Override
   public boolean perform(AbstractBuild<?, ?> build, Launcher launcher, BuildListener listener) throws InterruptedException, IOException {
-    PrintStream logger = listener.getLogger();
-    if (enabled == null) {
-      logger.println("Cannot check Gatling simulation tracking status, reports won't be archived.");
-      logger.println("Please make sure simulation tracking is enabled in your build configuration !");
-      return true;
-    }
-    if (!enabled) {
-      logger.println("Simulation tracking disabled, reports were not archived.");
-      return true;
-    }
-
-    logger.println("Archiving Gatling reports...");
     FilePath workspace = build.getWorkspace();
-    if (workspace != null) {
-      List<BuildSimulation> sims = saveFullReports(build, workspace, build.getRootDir(), logger);
-      if (sims.isEmpty()) {
-        logger.println("No newer Gatling reports to archive.");
-        return true;
-      }
-
-      addOrUpdateBuildAction(build, sims);
-
-      return true;
-    } else {
-      logger.println("Failed to access workspace, it may be on a non-connected slave.");
+    if (workspace == null) {
+      listener.getLogger().println("Failed to access workspace, it may be on a non-connected slave.");
       return false;
     }
-  }
 
-  private void addOrUpdateBuildAction(@Nonnull Run<?, ?> run, List<BuildSimulation> simulations) {
-    GatlingBuildAction action = run.getAction(GatlingBuildAction.class);
-
-    if (action != null) {
-      action.getSimulations().addAll(simulations);
-    } else {
-      action = new GatlingBuildAction(run, simulations);
-      run.addAction(action);
-    }
+    perform(build, workspace, launcher, listener);
+    return true;
   }
 
   @Override
@@ -112,6 +82,17 @@ public class GatlingPublisher extends Recorder implements SimpleBuildStep {
     }
 
     addOrUpdateBuildAction(run, sims);
+  }
+
+  private void addOrUpdateBuildAction(@Nonnull Run<?, ?> run, List<BuildSimulation> simulations) {
+    GatlingBuildAction action = run.getAction(GatlingBuildAction.class);
+
+    if (action != null) {
+      action.getSimulations().addAll(simulations);
+    } else {
+      action = new GatlingBuildAction(run, simulations);
+      run.addAction(action);
+    }
   }
 
   public boolean isEnabled() {
