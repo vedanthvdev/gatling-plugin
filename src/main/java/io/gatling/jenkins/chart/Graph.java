@@ -57,6 +57,7 @@ public abstract class Graph<Y extends Number> {
     }
   }
 
+  @SuppressWarnings("unused")
   public String getSeriesNamesJSON() {
     String json = null;
 
@@ -68,6 +69,7 @@ public abstract class Graph<Y extends Number> {
     return json;
   }
 
+  @SuppressWarnings("unused")
   public String getSeriesJSON() {
     String json = null;
 

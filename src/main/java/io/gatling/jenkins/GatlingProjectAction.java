@@ -50,6 +50,7 @@ public class GatlingProjectAction implements Action {
     return job;
   }
 
+  @SuppressWarnings("unused")
   public boolean isVisible() {
     for (Run<?, ?> build : getJob().getBuilds()) {
       GatlingBuildAction gatlingBuildAction = build.getAction(GatlingBuildAction.class);
@@ -60,6 +61,7 @@ public class GatlingProjectAction implements Action {
     return false;
   }
 
+  @SuppressWarnings("unused")
   public Graph<Long> getDashboardGraph() {
     return new Graph<Long>(job, MAX_BUILDS_TO_DISPLAY_DASHBOARD) {
       @Override
@@ -69,6 +71,7 @@ public class GatlingProjectAction implements Action {
     };
   }
 
+  @SuppressWarnings("unused")
   public Graph<Long> getMeanResponseTimeGraph() {
     return new Graph<Long>(job, MAX_BUILDS_TO_DISPLAY) {
       @Override
@@ -78,6 +81,7 @@ public class GatlingProjectAction implements Action {
     };
   }
 
+  @SuppressWarnings("unused")
   public Graph<Long> getPercentileResponseTimeGraph() {
     return new Graph<Long>(job, MAX_BUILDS_TO_DISPLAY) {
       @Override
@@ -87,6 +91,7 @@ public class GatlingProjectAction implements Action {
     };
   }
 
+  @SuppressWarnings("unused")
   public Graph<Long> getRequestKOPercentageGraph() {
     return new Graph<Long>(job, MAX_BUILDS_TO_DISPLAY) {
       @Override
@@ -113,7 +118,8 @@ public class GatlingProjectAction implements Action {
     return reports;
   }
 
+  @SuppressWarnings("unused")
   public String getReportURL(int build, String simName) {
-    return String.valueOf(build) + "/" + URL_NAME + "/report/" + simName;
+    return build + "/" + URL_NAME + "/report/" + simName;
   }
 }

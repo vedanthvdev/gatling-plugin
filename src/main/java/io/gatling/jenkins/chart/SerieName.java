@@ -40,7 +40,7 @@ public class SerieName implements JsonSerializable, Comparable<SerieName> {
     jgen.writeEndObject();
   }
 
-  public void serializeWithType(JsonGenerator jgen, SerializerProvider provider, TypeSerializer typeSer) throws IOException {
+  public void serializeWithType(JsonGenerator jgen, SerializerProvider provider, TypeSerializer typeSer) {
     throw new UnsupportedOperationException();
   }
 
@@ -52,27 +52,20 @@ public class SerieName implements JsonSerializable, Comparable<SerieName> {
     return path;
   }
 
+  public int compareTo(SerieName o) {
+    return this.name.compareTo(o.name);
+  }
+
   @Override
   public boolean equals(Object o) {
-    if (this == o)
-      return true;
-    if (o == null || getClass() != o.getClass())
-      return false;
-
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
     SerieName serieName = (SerieName) o;
-
-    if (name != null ? !name.equals(serieName.name) : serieName.name != null)
-      return false;
-
-    return true;
+    return Objects.equals(name, serieName.name);
   }
 
   @Override
   public int hashCode() {
-    return name != null ? name.hashCode() : 0;
-  }
-
-  public int compareTo(SerieName o) {
-    return this.name.compareTo(o.name);
+    return Objects.hash(name);
   }
 }

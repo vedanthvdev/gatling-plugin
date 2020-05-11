@@ -33,10 +33,12 @@ public class Point<X extends Number, Y extends Number> implements JsonSerializab
     this.name = name;
   }
 
+  @SuppressWarnings("unused")
   public X getX() {
     return x;
   }
 
+  @SuppressWarnings("unused")
   public Y getY() {
     return y;
   }

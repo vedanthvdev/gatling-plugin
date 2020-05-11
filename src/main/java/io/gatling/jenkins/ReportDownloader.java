@@ -42,6 +42,7 @@ public class ReportDownloader {
    * @throws IOException
    * @throws InterruptedException
    */
+  @SuppressWarnings("unused")
   public void doIndex(StaplerRequest request, StaplerResponse response)
           throws IOException, InterruptedException {
     try (ServletOutputStream os = response.getOutputStream()) {

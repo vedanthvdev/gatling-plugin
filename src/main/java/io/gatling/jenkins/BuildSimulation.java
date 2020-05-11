@@ -26,9 +26,6 @@ import java.io.File;
 public class BuildSimulation {
   private final String simulationName;
   private final RequestReport requestReport;
-  @Deprecated
-  private transient FilePath simulationDirectory;
-  // TODO better to save, for example, a relative path from Run.rootDir
   private File simulationPath;
 
   public BuildSimulation(String simulationName, RequestReport requestReport, File simulationPath) {
@@ -37,6 +34,10 @@ public class BuildSimulation {
     this.simulationPath = simulationPath;
   }
 
+  // see https://wiki.jenkins.io/display/JENKINS/Hint+on+retaining+backward+compatibility
+  @Deprecated
+  private transient FilePath simulationDirectory;
+  @SuppressWarnings("unused")
   private Object readResolve() {
     if (simulationDirectory != null) {
         simulationPath = new File(simulationDirectory.getRemote());

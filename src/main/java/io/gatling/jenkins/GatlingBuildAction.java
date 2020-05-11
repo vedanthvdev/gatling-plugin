@@ -78,10 +78,12 @@ public class GatlingBuildAction implements Action, SimpleBuildStep.LastBuildActi
    *
    * @param reportName the name of the reportName
    */
+  @SuppressWarnings("unused")
   public ReportDownloader getReport(String reportName) {
     return new ReportDownloader(getSimulationByReportName(reportName));
   }
 
+  @SuppressWarnings("unused")
   public String getReportURL(BuildSimulation simulation) {
     return URL_NAME + "/report/" + simulation.getSimulationDirectory().getName();
   }

@@ -17,6 +17,7 @@ package io.gatling.jenkins;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+@SuppressWarnings("unused")
 public class RequestReport {
 
   private String name;

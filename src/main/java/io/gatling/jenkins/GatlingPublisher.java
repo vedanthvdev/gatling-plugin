@@ -36,7 +36,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-@SuppressWarnings("unchecked")
 public class GatlingPublisher extends Recorder implements SimpleBuildStep {
 
   private final Boolean enabled;
@@ -95,6 +94,7 @@ public class GatlingPublisher extends Recorder implements SimpleBuildStep {
     }
   }
 
+  @SuppressWarnings("unused")
   public boolean isEnabled() {
     return enabled != null && enabled;
   }
@@ -183,17 +183,18 @@ public class GatlingPublisher extends Recorder implements SimpleBuildStep {
   public static class DescriptorImpl extends BuildStepDescriptor<Publisher> {
 
     @Override
-    @SuppressWarnings("rawtypes")
     public boolean isApplicable(Class<? extends AbstractProject> aClass) {
       return true;
     }
 
     @Override
+    @Nonnull
     public String getDisplayName() {
       return Messages.title();
     }
 
     @Initializer(before = InitMilestone.PLUGINS_STARTED)
+    @SuppressWarnings("unused")
     public static void addAliases() {
       Items.XSTREAM2.addCompatibilityAlias("io.gatling.jenkins.GatlingPublisher", GatlingPublisher.class);
       Items.XSTREAM2.addCompatibilityAlias("io.gatling.jenkins.GatlingBuildAction", GatlingBuildAction.class);

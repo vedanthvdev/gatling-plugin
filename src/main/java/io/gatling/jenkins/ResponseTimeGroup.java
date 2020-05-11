@@ -15,6 +15,7 @@
  */
 package io.gatling.jenkins;
 
+@SuppressWarnings("unused")
 public class ResponseTimeGroup {
 
   private String name;
