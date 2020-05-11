@@ -96,7 +96,7 @@ public class GatlingPublisher extends Recorder implements SimpleBuildStep {
   }
 
   public boolean isEnabled() {
-    return enabled;
+    return enabled != null && enabled;
   }
 
   public BuildStepMonitor getRequiredMonitorService() {
