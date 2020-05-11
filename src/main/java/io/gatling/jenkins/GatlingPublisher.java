@@ -129,12 +129,9 @@ public class GatlingPublisher extends Recorder implements SimpleBuildStep {
     List<BuildSimulation> simsToArchive = new ArrayList<>();
 
     File allSimulationsDirectory = new File(rootDir, "simulations");
-    if (!allSimulationsDirectory.exists()) {
-      boolean mkdirResult = allSimulationsDirectory.mkdir();
-      if (! mkdirResult) {
-        logger.println("Could not create simulations archive directory '" + allSimulationsDirectory + "'");
-        return Collections.emptyList();
-      }
+    if (!allSimulationsDirectory.exists()&& !allSimulationsDirectory.mkdir()) {
+      logger.println("Could not create simulations archive directory '" + allSimulationsDirectory + "'");
+      return Collections.emptyList();
     }
 
     for (FilePath reportToArchive : reportsToArchive) {
@@ -142,10 +139,15 @@ public class GatlingPublisher extends Recorder implements SimpleBuildStep {
       int dashIndex = name.lastIndexOf('-');
       String simulation = name.substring(0, dashIndex);
       File simulationDirectory = new File(allSimulationsDirectory, name);
-      boolean mkdirResult = simulationDirectory.mkdir();
-      if (! mkdirResult) {
-        logger.println("Could not create simulation archive directory '" + simulationDirectory + "'");
-        return Collections.emptyList();
+
+      if (simulationDirectory.exists()) {
+        logger.printf("Simulation archive directory '%s' already exists, skipping.%n", simulationDirectory);
+        continue;
+      }
+
+      if (!simulationDirectory.mkdir()) {
+        logger.printf("Could not create simulation archive directory '%s', skipping.%n", simulationDirectory);
+        continue;
       }
 
       FilePath reportDirectory = new FilePath(simulationDirectory);
