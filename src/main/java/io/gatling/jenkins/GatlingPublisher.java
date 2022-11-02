@@ -27,6 +27,7 @@ import hudson.tasks.Publisher;
 import hudson.tasks.Recorder;
 import jenkins.tasks.SimpleBuildStep;
 import org.kohsuke.stapler.DataBoundConstructor;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 import javax.annotation.Nonnull;
 import java.io.File;
@@ -103,6 +104,7 @@ public class GatlingPublisher extends Recorder implements SimpleBuildStep {
     return BuildStepMonitor.BUILD;
   }
 
+  @SuppressFBWarnings(value="NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE")
   private List<BuildSimulation> saveFullReports(@Nonnull Run<?,?> run, @Nonnull FilePath workspace, @Nonnull File rootDir, @Nonnull PrintStream logger)
           throws IOException, InterruptedException {
     FilePath[] files = workspace.list("**/global_stats.json");
