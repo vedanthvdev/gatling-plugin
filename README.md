@@ -18,6 +18,8 @@ This plugin allows you to :
 
 ## Changelog
 
+Changelog is now published on github releases
+
 **A [XSS vulnerability](https://jenkins.io/security/advisory/2020-04-07/#SECURITY-1633) was fixed in the version 1.3.0 of the plugin, be careful when using older version of the plugin.**
 
 ![(warning)](https://wiki.jenkins.io/s/en_GB/8100/5084f018d64a97dc638ca9a178856f851ea353ff/_/images/icons/emoticons/warning.svg)
