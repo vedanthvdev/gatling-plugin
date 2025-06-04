@@ -52,13 +52,13 @@ public class GatlingArchiverStepTest extends Assert {
         // job setup
         WorkflowJob foo = j.jenkins.createProject(WorkflowJob.class, "foo");
         foo.setDefinition(new CpsFlowDefinition(StringUtils.join(Arrays.asList(
-                "node {",
-                "  sleep 1", // JENKINS-51015
-                "  writeFile file: 'results/foo-1234/js/global_stats.json', text: '{}'",
-                "  writeFile file: 'results/foo-4321/js/global_stats.json', text: '{}'",
-                "  writeFile file: 'results/bar-5678/js/global_stats.json', text: '{}'",
-                "  gatlingArchive()",
-                "}"), "\n")));
+            "node {",
+            "  sleep 1", // JENKINS-51015
+            "  writeFile file: 'results/foo-1234/index.html', text: '<html><body><div id=\"container_statistics_body\"><table><tbody><tr class=\"total col-1\"><td>Total</td><td class=\"value total col-2\">100</td><td class=\"value ok col-3\">95</td><td class=\"value ko col-4\">5</td><td class=\"value total col-7\">50</td></tr></tbody></table></div></body></html>'",
+            "  writeFile file: 'results/foo-4321/index.html', text: '<html><body><div id=\"container_statistics_body\"><table><tbody><tr class=\"total col-1\"><td>Total</td><td class=\"value total col-2\">100</td><td class=\"value ok col-3\">95</td><td class=\"value ko col-4\">5</td><td class=\"value total col-7\">50</td></tr></tbody></table></div></body></html>'",
+            "  writeFile file: 'results/bar-5678/index.html', text: '<html><body><div id=\"container_statistics_body\"><table><tbody><tr class=\"total col-1\"><td>Total</td><td class=\"value total col-2\">100</td><td class=\"value ok col-3\">95</td><td class=\"value ko col-4\">5</td><td class=\"value total col-7\">50</td></tr></tbody></table></div></body></html>'",
+            "  gatlingArchive()",
+            "}"), "\n")));
 
         // get the build going, and wait until workflow pauses
         WorkflowRun b = j.assertBuildStatusSuccess(foo.scheduleBuild2(0).get());
@@ -69,19 +69,19 @@ public class GatlingArchiverStepTest extends Assert {
     @Issue("JENKINS-50977")
     public void archiveInFreestyle() throws Exception {
         Assume.assumeFalse("The test is Unix-only",
-                hudson.remoting.Launcher.isWindows());
+            hudson.remoting.Launcher.isWindows());
         FreeStyleProject foo = j.createFreeStyleProject();
         DumbSlave onlineSlave = j.createOnlineSlave();
 
         foo.setAssignedNode(onlineSlave);
         foo.getBuildersList().add(new Shell("\n" +
-                "sleep 1 \n" + // Otherwise GatlingPublisher skips that because BuildStart time has second-accuracy (JENKINS-51015)
-                "mkdir -p results/foo-1234/js/\n" +
-                "echo '{}' > results/foo-1234/js/global_stats.json\n" +
-                "mkdir -p results/foo-4321/js/\n" +
-                "echo '{}' > results/foo-4321/js/global_stats.json\n" +
-                "mkdir -p results/bar-5678/js/\n" +
-                "echo '{}' > results/bar-5678/js/global_stats.json\n"
+            "sleep 1 \n" + // Otherwise GatlingPublisher skips that because BuildStart time has second-accuracy (JENKINS-51015)
+            "mkdir -p results/foo-1234/\n" +
+            "echo '<html><body><div id=\"container_statistics_body\"><table><tbody><tr class=\"total col-1\"><td>Total</td><td class=\"value total col-2\">100</td><td class=\"value ok col-3\">95</td><td class=\"value ko col-4\">5</td><td class=\"value total col-7\">50</td></tr></tbody></table></div></body></html>' > results/foo-1234/index.html\n" +
+            "mkdir -p results/foo-4321/\n" +
+            "echo '<html><body><div id=\"container_statistics_body\"><table><tbody><tr class=\"total col-1\"><td>Total</td><td class=\"value total col-2\">100</td><td class=\"value ok col-3\">95</td><td class=\"value ko col-4\">5</td><td class=\"value total col-7\">50</td></tr></tbody></table></div></body></html>' > results/foo-4321/index.html\n" +
+            "mkdir -p results/bar-5678/\n" +
+            "echo '<html><body><div id=\"container_statistics_body\"><table><tbody><tr class=\"total col-1\"><td>Total</td><td class=\"value total col-2\">100</td><td class=\"value ok col-3\">95</td><td class=\"value ko col-4\">5</td><td class=\"value total col-7\">50</td></tr></tbody></table></div></body></html>' > results/bar-5678/index.html\n"
         ));
         foo.getPublishersList().add(new GatlingPublisher(true));
 
