@@ -1,41 +1,41 @@
 /**
  * Copyright 2011-2020 GatlingCorp (http://gatling.io)
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * <p>Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file
+ * except in compliance with the License. You may obtain a copy of the License at
  *
- * 		http://www.apache.org/licenses/LICENSE-2.0
+ * <p>http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
+ * <p>Unless required by applicable law or agreed to in writing, software distributed under the
+ * License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
+ * express or implied. See the License for the specific language governing permissions and
  * limitations under the License.
  */
 package io.gatling.jenkins;
 
-import hudson.Extension;
-import hudson.FilePath;
-import hudson.Launcher;
-import hudson.init.Initializer;
-import hudson.init.InitMilestone;
-import hudson.model.*;
-import hudson.tasks.BuildStepDescriptor;
-import hudson.tasks.BuildStepMonitor;
-import hudson.tasks.Publisher;
-import hudson.tasks.Recorder;
-import jenkins.tasks.SimpleBuildStep;
-import org.kohsuke.stapler.DataBoundConstructor;
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-
-import javax.annotation.Nonnull;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import javax.annotation.Nonnull;
+
+import org.kohsuke.stapler.DataBoundConstructor;
+
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import hudson.Extension;
+import hudson.FilePath;
+import hudson.Launcher;
+import hudson.init.InitMilestone;
+import hudson.init.Initializer;
+import hudson.model.*;
+import hudson.tasks.BuildStepDescriptor;
+import hudson.tasks.BuildStepMonitor;
+import hudson.tasks.Publisher;
+import hudson.tasks.Recorder;
+import jenkins.tasks.SimpleBuildStep;
 
 public class GatlingPublisher extends Recorder implements SimpleBuildStep {
 
@@ -46,12 +46,14 @@ public class GatlingPublisher extends Recorder implements SimpleBuildStep {
     this.enabled = enabled;
   }
 
-
   @Override
-  public boolean perform(AbstractBuild<?, ?> build, Launcher launcher, BuildListener listener) throws InterruptedException, IOException {
+  public boolean perform(AbstractBuild<?, ?> build, Launcher launcher, BuildListener listener)
+      throws InterruptedException, IOException {
     FilePath workspace = build.getWorkspace();
     if (workspace == null) {
-      listener.getLogger().println("Failed to access workspace, it may be on a non-connected slave.");
+      listener
+          .getLogger()
+          .println("Failed to access workspace, it may be on a non-connected slave.");
       return false;
     }
 
@@ -60,12 +62,17 @@ public class GatlingPublisher extends Recorder implements SimpleBuildStep {
   }
 
   @Override
-  public void perform(@Nonnull Run<?, ?> run, @Nonnull FilePath workspace, @Nonnull Launcher launcher, @Nonnull TaskListener listener)
+  public void perform(
+      @Nonnull Run<?, ?> run,
+      @Nonnull FilePath workspace,
+      @Nonnull Launcher launcher,
+      @Nonnull TaskListener listener)
       throws InterruptedException, IOException {
     PrintStream logger = listener.getLogger();
     if (enabled == null) {
       logger.println("Cannot check Gatling simulation tracking status, reports won't be archived.");
-      logger.println("Please make sure simulation tracking is enabled in your build configuration !");
+      logger.println(
+          "Please make sure simulation tracking is enabled in your build configuration !");
       return;
     }
     if (!enabled) {
@@ -104,8 +111,12 @@ public class GatlingPublisher extends Recorder implements SimpleBuildStep {
     return BuildStepMonitor.BUILD;
   }
 
-  @SuppressFBWarnings(value="NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE")
-  private List<BuildSimulation> saveFullReports(@Nonnull Run<?,?> run, @Nonnull FilePath workspace, @Nonnull File rootDir, @Nonnull PrintStream logger)
+  @SuppressFBWarnings(value = "NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE")
+  private List<BuildSimulation> saveFullReports(
+      @Nonnull Run<?, ?> run,
+      @Nonnull FilePath workspace,
+      @Nonnull File rootDir,
+      @Nonnull PrintStream logger)
       throws IOException, InterruptedException {
     logger.println("here is the workspace: " + workspace);
     FilePath[] files = workspace.list("**/index.html");
@@ -135,7 +146,8 @@ public class GatlingPublisher extends Recorder implements SimpleBuildStep {
     logger.println("Simulations directory: " + allSimulationsDirectory);
 
     if (!allSimulationsDirectory.exists() && !allSimulationsDirectory.mkdirs()) {
-      logger.println("Could not create simulations archive directory '" + allSimulationsDirectory + "'");
+      logger.println(
+          "Could not create simulations archive directory '" + allSimulationsDirectory + "'");
       return Collections.emptyList();
     }
 
@@ -146,12 +158,14 @@ public class GatlingPublisher extends Recorder implements SimpleBuildStep {
       File simulationDirectory = new File(allSimulationsDirectory, name);
 
       if (simulationDirectory.exists()) {
-        logger.printf("Simulation archive directory '%s' already exists, skipping.%n", simulationDirectory);
+        logger.printf(
+            "Simulation archive directory '%s' already exists, skipping.%n", simulationDirectory);
         continue;
       }
 
       if (!simulationDirectory.mkdirs()) {
-        logger.printf("Could not create simulation archive directory '%s', skipping.%n", simulationDirectory);
+        logger.printf(
+            "Could not create simulation archive directory '%s', skipping.%n", simulationDirectory);
         continue;
       }
 
@@ -161,11 +175,13 @@ public class GatlingPublisher extends Recorder implements SimpleBuildStep {
       try {
         SimulationReport report = new SimulationReport(reportDirectory, simulation);
         report.readStatsFile();
-        BuildSimulation sim = new BuildSimulation(simulation, report.getGlobalReport(), simulationDirectory);
+        BuildSimulation sim =
+            new BuildSimulation(simulation, report.getGlobalReport(), simulationDirectory);
         simsToArchive.add(sim);
         logger.println("Successfully archived report for simulation: " + simulation);
       } catch (Exception e) {
-        logger.println("Error processing report for simulation " + simulation + ": " + e.getMessage());
+        logger.println(
+            "Error processing report for simulation " + simulation + ": " + e.getMessage());
       }
     }
 
@@ -173,8 +189,9 @@ public class GatlingPublisher extends Recorder implements SimpleBuildStep {
   }
 
   @Nonnull
-  private static List<FilePath> selectReports(@Nonnull Run<?, ?> run, @Nonnull List<FilePath> reportFolders,
-                                              @Nonnull PrintStream logger) throws InterruptedException, IOException {
+  private static List<FilePath> selectReports(
+      @Nonnull Run<?, ?> run, @Nonnull List<FilePath> reportFolders, @Nonnull PrintStream logger)
+      throws InterruptedException, IOException {
     long buildStartTime = run.getStartTimeInMillis();
     List<FilePath> reportsFromThisBuild = new ArrayList<>();
     for (FilePath reportFolder : reportFolders) {
@@ -209,8 +226,10 @@ public class GatlingPublisher extends Recorder implements SimpleBuildStep {
     @Initializer(before = InitMilestone.PLUGINS_STARTED)
     @SuppressWarnings("unused")
     public static void addAliases() {
-      Items.XSTREAM2.addCompatibilityAlias("io.gatling.jenkins.GatlingPublisher", GatlingPublisher.class);
-      Items.XSTREAM2.addCompatibilityAlias("io.gatling.jenkins.GatlingBuildAction", GatlingBuildAction.class);
+      Items.XSTREAM2.addCompatibilityAlias(
+          "io.gatling.jenkins.GatlingPublisher", GatlingPublisher.class);
+      Items.XSTREAM2.addCompatibilityAlias(
+          "io.gatling.jenkins.GatlingBuildAction", GatlingBuildAction.class);
     }
   }
 }
