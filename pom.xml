@@ -47,7 +47,7 @@
 		<changelist>999999-SNAPSHOT</changelist>
 
 		<!-- Baseline Jenkins version you use to build the plugin. Users must have this version or newer to run. -->
-		<jenkins.version>2.346.3</jenkins.version>
+		<jenkins.version>2.387.3</jenkins.version>
 
 		<maven-compiler-plugin.version>3.0</maven-compiler-plugin.version>
 		<maven-source-plugin.version>2.2</maven-source-plugin.version>

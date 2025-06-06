@@ -1,17 +1,17 @@
 package io.gatling.jenkins;
 
+import hudson.FilePath;
 import hudson.model.Action;
+import hudson.model.DirectoryBrowserSupport;
+import hudson.model.ModelObject;
 import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.StaplerResponse;
 
 import javax.servlet.ServletException;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 
-public class ReportViewer implements Action {
+public class ReportViewer implements Action, ModelObject {
     private final BuildSimulation simulation;
 
     public ReportViewer(BuildSimulation simulation) {
@@ -42,52 +42,31 @@ public class ReportViewer implements Action {
             return;
         }
 
-        rsp.setContentType("text/html");
-        try (InputStream in = new FileInputStream(indexFile);
-             OutputStream out = rsp.getOutputStream()) {
-            byte[] buffer = new byte[8192];
-            int bytesRead;
-            while ((bytesRead = in.read(buffer)) != -1) {
-                out.write(buffer, 0, bytesRead);
-            }
+        // If the request is for index.html, serve it directly
+        if (req.getRestOfPath().equals("/index.html")) {
+            FilePath base = new FilePath(reportDir);
+            DirectoryBrowserSupport dbs = new DirectoryBrowserSupport(this, base, "Gatling Report", "folder.png", true);
+            dbs.setIndexFileName("index.html");
+            dbs.generateResponse(req, rsp, this);
+        } else {
+            // Otherwise, serve our custom template
+            req.getView(this, "index.jelly").forward(req, rsp);
         }
     }
 
     public void doDynamic(StaplerRequest req, StaplerResponse rsp) throws IOException, ServletException {
-        String path = req.getRestOfPath();
-        if (path.startsWith("/")) {
-            path = path.substring(1);
-        }
-
         File reportDir = simulation.getSimulationDirectory();
-        File requestedFile = new File(reportDir, path);
-
-        if (!requestedFile.exists() || !requestedFile.getCanonicalPath().startsWith(reportDir.getCanonicalPath())) {
-            rsp.sendError(404, "File not found");
-            return;
-        }
-
-        String contentType = getContentType(path);
-        rsp.setContentType(contentType);
-
-        try (InputStream in = new FileInputStream(requestedFile);
-             OutputStream out = rsp.getOutputStream()) {
-            byte[] buffer = new byte[8192];
-            int bytesRead;
-            while ((bytesRead = in.read(buffer)) != -1) {
-                out.write(buffer, 0, bytesRead);
-            }
-        }
+        FilePath base = new FilePath(reportDir);
+        DirectoryBrowserSupport dbs = new DirectoryBrowserSupport(this, base, "Gatling Report", "folder.png", true);
+        dbs.setIndexFileName("index.html");
+        dbs.generateResponse(req, rsp, this);
     }
 
-    private String getContentType(String path) {
-        if (path.endsWith(".html")) return "text/html";
-        if (path.endsWith(".css")) return "text/css";
-        if (path.endsWith(".js")) return "application/javascript";
-        if (path.endsWith(".png")) return "image/png";
-        if (path.endsWith(".jpg") || path.endsWith(".jpeg")) return "image/jpeg";
-        if (path.endsWith(".gif")) return "image/gif";
-        if (path.endsWith(".svg")) return "image/svg+xml";
-        return "application/octet-stream";
+    public String getSimulationName() {
+        return simulation.getSimulationName();
+    }
+
+    public String getSimulationDirectory() {
+        return simulation.getSimulationDirectory().getName();
     }
 }
