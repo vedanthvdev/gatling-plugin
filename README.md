@@ -13,7 +13,7 @@ stress tool, with Jenkins.
 
 This plugin allows you to : 
 
-- Keep track of a Gatling simulation, providing performance trends across builds(Enterprise Only)
+- Keep track of a Gatling simulation, providing performance trends across builds
 - Download the detailed reports for each build
 
 ## Changelog
@@ -115,7 +115,7 @@ The Gatling entry in the left summary has two purposes, depending on
 which page you are.
 
 If you are on the project dashboard, clicking on Gatling will get you to
-a more detailed performance trend(Enterprise only), displaying for your last 30 builds :
+a more detailed performance trend, displaying for your last 30 builds :
 
 -   Mean response time trend
 -   95th percentiles response time trend
@@ -125,7 +125,7 @@ This page will also provides links to download the html reports for all your
 builds, at the bottom of the page.
 
 If you are on the summary of a specific build, clicking on Gatling will
-get you to a list of all available reports for this build without the graph(Enterprise only).
+get you to a list of all available reports for this build.
 
 ## Bug Reporting
 

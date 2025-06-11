@@ -6,23 +6,11 @@
 			<st:include it="${it.run}" page="sidepanel.jelly"/>
 		</l:side-panel>
 		<l:main-panel>
-            <h2>Gatling Performance Reports(Without Graphs):</h2>
-            <ul style="list-style-type: none; padding-left: 0;">
+            <h2>${%AvailableReports} :</h2>
+            <ul>
                 <j:forEach items="${it.simulations}" var="sim">
-                    <li style="margin-bottom: 20px;">
-                        <div style="margin-bottom: 10px;">
-                            <a href="../${it.getReportURL(sim)}" target="_blank" style="font-weight: bold; font-size: 16px;">${sim.getSimulationDirectory().getName()}</a>
-                        </div>
-                        <div style="margin-left: 20px;">
-                            <h2 style="font-size: 20px; color: white; margin: 10px 0;">Download Options:</h2>
-                            <ul style="list-style-type: disc; margin-left: 20px;">
-                                <li style="margin-bottom: 5px;">
-                                    <a href="../${it.getDownloadURL(sim)}" class="download-link" style="font-weight: bold; font-size: 16px;">
-                                        Download the report with graphs
-                                    </a>
-                                </li>
-                            </ul>
-                        </div>
+                    <li>
+                        <a href="../${it.getReportURL(sim)}" target="_blank">${sim.getSimulationDirectory().getName()}</a>
                     </li>
                 </j:forEach>
             </ul>
