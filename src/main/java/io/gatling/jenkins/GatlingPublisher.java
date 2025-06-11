@@ -61,7 +61,7 @@ public class GatlingPublisher extends Recorder implements SimpleBuildStep {
 
   @Override
   public void perform(@Nonnull Run<?, ?> run, @Nonnull FilePath workspace, @Nonnull Launcher launcher, @Nonnull TaskListener listener)
-      throws InterruptedException, IOException {
+          throws InterruptedException, IOException {
     PrintStream logger = listener.getLogger();
     if (enabled == null) {
       logger.println("Cannot check Gatling simulation tracking status, reports won't be archived.");
@@ -106,35 +106,32 @@ public class GatlingPublisher extends Recorder implements SimpleBuildStep {
 
   @SuppressFBWarnings(value="NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE")
   private List<BuildSimulation> saveFullReports(@Nonnull Run<?,?> run, @Nonnull FilePath workspace, @Nonnull File rootDir, @Nonnull PrintStream logger)
-      throws IOException, InterruptedException {
-    logger.println("here is the workspace: " + workspace);
-    FilePath[] files = workspace.list("**/index.html");
+          throws IOException, InterruptedException {
+    FilePath[] files = workspace.list("**/global_stats.json");
     List<FilePath> reportFolders = new ArrayList<>();
 
     if (files.length == 0) {
-      logger.println("No Gatling reports found in workspace");
+      logger.println("Could not find a Gatling report in results folder.");
       return Collections.emptyList();
     }
 
-    // Get reports folders for all "index.html" found
+    // Get reports folders for all "global_stats.json" found
     for (FilePath file : files) {
-      logger.println("Found report: " + file);
-      reportFolders.add(file.getParent());
+      reportFolders.add(file.getParent().getParent());
     }
 
     List<FilePath> reportsToArchive = selectReports(run, reportFolders, logger);
-    logger.println("Reports to archive: " + reportsToArchive);
 
+
+    // If the most recent report has already been archived, there's nothing else to do
     if (reportsToArchive.isEmpty()) {
-      logger.println("No new reports to archive");
       return Collections.emptyList();
     }
 
     List<BuildSimulation> simsToArchive = new ArrayList<>();
-    File allSimulationsDirectory = new File(rootDir, "simulations");
-    logger.println("Simulations directory: " + allSimulationsDirectory);
 
-    if (!allSimulationsDirectory.exists() && !allSimulationsDirectory.mkdirs()) {
+    File allSimulationsDirectory = new File(rootDir, "simulations");
+    if (!allSimulationsDirectory.exists()&& !allSimulationsDirectory.mkdir()) {
       logger.println("Could not create simulations archive directory '" + allSimulationsDirectory + "'");
       return Collections.emptyList();
     }
@@ -150,24 +147,22 @@ public class GatlingPublisher extends Recorder implements SimpleBuildStep {
         continue;
       }
 
-      if (!simulationDirectory.mkdirs()) {
+      if (!simulationDirectory.mkdir()) {
         logger.printf("Could not create simulation archive directory '%s', skipping.%n", simulationDirectory);
         continue;
       }
 
       FilePath reportDirectory = new FilePath(simulationDirectory);
+
       reportToArchive.copyRecursiveTo(reportDirectory);
 
-      try {
-        SimulationReport report = new SimulationReport(reportDirectory, simulation);
-        report.readStatsFile();
-        BuildSimulation sim = new BuildSimulation(simulation, report.getGlobalReport(), simulationDirectory);
-        simsToArchive.add(sim);
-        logger.println("Successfully archived report for simulation: " + simulation);
-      } catch (Exception e) {
-        logger.println("Error processing report for simulation " + simulation + ": " + e.getMessage());
-      }
+      SimulationReport report = new SimulationReport(reportDirectory, simulation);
+      report.readStatsFile();
+      BuildSimulation sim = new BuildSimulation(simulation, report.getGlobalReport(), simulationDirectory);
+
+      simsToArchive.add(sim);
     }
+
 
     return simsToArchive;
   }
@@ -189,11 +184,7 @@ public class GatlingPublisher extends Recorder implements SimpleBuildStep {
   }
 
   @Extension
-  public static final class DescriptorImpl extends BuildStepDescriptor<Publisher> {
-
-    public DescriptorImpl() {
-      super(GatlingPublisher.class);
-    }
+  public static class DescriptorImpl extends BuildStepDescriptor<Publisher> {
 
     @Override
     public boolean isApplicable(Class<? extends AbstractProject> aClass) {
