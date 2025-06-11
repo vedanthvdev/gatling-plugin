@@ -73,15 +73,14 @@ public class GatlingBuildAction implements Action, SimpleBuildStep.LastBuildActi
    * This method is called dynamically for any HTTP request to our plugin's
    * URL followed by "/report/reportName".
    *
-   * It returns a new instance of {@link ReportViewer}, which contains the
+   * It returns a new instance of {@link ReportDownloader}, which contains the
    * actual logic for downloading a report.
    *
    * @param reportName the name of the reportName
    */
   @SuppressWarnings("unused")
-  public ReportViewer getReport(String reportName) {
-    BuildSimulation simulation = getSimulationByReportName(reportName);
-    return simulation != null ? new ReportViewer(simulation) : null;
+  public ReportDownloader getReport(String reportName) {
+    return new ReportDownloader(getSimulationByReportName(reportName));
   }
 
   @SuppressWarnings("unused")
