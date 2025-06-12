@@ -15,15 +15,12 @@
  */
 package io.gatling.jenkins;
 
-import org.apache.commons.io.IOUtils;
-
-import javax.servlet.ServletOutputStream;
-
-import org.kohsuke.stapler.StaplerRequest;
-import org.kohsuke.stapler.StaplerResponse;
+import hudson.FilePath;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.ServletException;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 
 /**
@@ -31,32 +28,21 @@ import java.io.IOException;
  */
 public class ReportDownloader {
 
-    private BuildSimulation simulation;
+  private final BuildSimulation simulation;
 
-    public ReportDownloader(BuildSimulation simulation) {
-        this.simulation = simulation;
-    }
+  public ReportDownloader(BuildSimulation simulation) {
+      this.simulation = simulation;
+  }
 
-    /**
-     * This method will be called when the user clicks on the Gatling reports link
-     *
-     * @param request
-     * @param response
-     * @throws IOException
-     * @throws InterruptedException
-     */
     @SuppressWarnings("unused")
-    public void doIndex(StaplerRequest request, StaplerResponse response)
-        throws IOException, InterruptedException {
+    public void doIndex(HttpServletRequest request, HttpServletResponse response)
+        throws IOException, InterruptedException, ServletException {
+
         File file = ZipSimulationUtil.getSimulationZip(simulation.getSimulationDirectory());
-
         response.setContentType("application/zip");
-        response.setContentLength((int) file.length());
-        response.addHeader("Content-Disposition", "attachment;filename=\"" + simulation.getSimulationName() + ".zip\"");
-
-        try (ServletOutputStream os = response.getOutputStream();
-             FileInputStream fis = new FileInputStream(file)) {
-            IOUtils.copy(fis, os);
-        }
+        response.setHeader("Content-Disposition", "attachment; filename=" + file.getName());
+        
+        FilePath filePath = new FilePath(file);
+        filePath.copyTo(response.getOutputStream());
     }
 }
